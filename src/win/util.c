@@ -31,7 +31,8 @@
 #include "uv.h"
 #include "internal.h"
 
-#include <iphlpapi.h>
+#include <NapTypes.h>
+//#include <iphlpapi.h>
 #include <psapi.h>
 #include <tlhelp32.h>
 
