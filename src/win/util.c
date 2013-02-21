@@ -33,6 +33,7 @@
 
 #include <NapTypes.h>
 //#include <iphlpapi.h>
+DWORD WINAPI GetAdaptersAddresses(ULONG Family,DWORD Flags,PVOID Reserved,PIP_ADAPTER_ADDRESSES pAdapterAddresses,PULONG pOutBufLen);
 #include <psapi.h>
 #include <tlhelp32.h>
 
