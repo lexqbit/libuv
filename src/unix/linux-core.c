@@ -140,12 +140,6 @@ void uv__io_poll(uv_loop_t* loop, int timeout) {
     assert(w->fd >= 0);
     assert(w->fd < (int) loop->nwatchers);
 
-    /* Filter out no-op changes. This is for compatibility with the event ports
-     * backend, see the comment in uv__io_start().
-     */
-    if (w->events == w->pevents)
-      continue;
-
     e.events = w->pevents;
     e.data = w->fd;
 
@@ -218,11 +212,12 @@ void uv__io_poll(uv_loop_t* loop, int timeout) {
       w = loop->watchers[fd];
 
       if (w == NULL) {
-        /* File descriptor that we've stopped watching, disarm it. */
-        if (uv__epoll_ctl(loop->backend_fd, UV__EPOLL_CTL_DEL, fd, pe))
-          if (errno != EBADF && errno != ENOENT)
-            abort();
-
+        /* File descriptor that we've stopped watching, disarm it.
+         *
+         * Ignore all errors because we may be racing with another thread
+         * when the file descriptor is closed.
+         */
+        uv__epoll_ctl(loop->backend_fd, UV__EPOLL_CTL_DEL, fd, pe);
         continue;
       }
 
